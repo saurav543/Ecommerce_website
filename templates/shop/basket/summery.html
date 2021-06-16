@@ -1,0 +1,135 @@
+{% extends '../../base.html'%}{% load static %} {% block title %} Shopping basket{% endblock %} {% block content %}
+<div class="container">
+    <div class="text-center">
+        <div class="col-12">
+            <h1 class="h2"> Your Basket</h1>
+        </div>
+        <div class="col-12  justify-content-between">
+            <div>Manage your <b>items</b> in baskets</div>
+        </div>
+    </div>
+    <hr />
+    <div class="container">
+        {% if basket|length == 0 %}
+        <div class="col-12">Your basket is empty<a href="{%url 'inventory:product_all' %}">Shop</a></div>
+        {%else%}
+        <div class="text-end">
+            <div class="">Sub Total: <span class="fw-bold">₹</span>
+                <div id="subtotal" class="d-inline-flex fw-bold">{{basket.get_subtotal_price}}</div>
+            </div>
+            <div id="">Shipping Charge<span class="small">(Next day delivery)</span>: ₹<span class="fw-bold">{{basket.delivery_price}}</span>
+            </div>
+            <div class="pt-2">Total to pay: <span id="total" class="fw-bold ">{{basket.get_total_price}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 m-2 order-md-last p-0 order-3">
+        <div class="d-grid gap-2">
+            <a role="button" href="{% url 'checkout:deliverychoices' %}" class="btn btn-success fw-bold" type="button">Checkout</a>
+            <button class="btn btn-light" type="button">Save for later</button>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 ms-2">
+    {% for item in basket %} {% with product=item.product %}
+    <div data-index="{{product.id}}" class="row mb-4 border product-item">
+        <div class="row g-4">
+            <div class="col-md-5 col-lg-5 order-md-first bg-light">
+                {% for image in product.product_image.all%} {% if image.is_feature %}
+                <img class="img-fluid mx-auto d-block" width="200px" src="{{image.image.url}}" alt="{{image.alt_text}}" /> {% endif %} {% endfor %}
+
+            </div>
+            <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
+                <h1 class="mb-0 h4">{{product.title|title}}</h1>
+                <p><span class="lead">{{product.author}}</span></p>
+                <p>{{product.description|slice:":355"}}....</p>
+                <div class="border">
+                    <div class="col bordor-bottom">
+                        <div class="row p-3">
+                            <div class="col-6">hardback</div>
+                            <div class="col-6 text-end">
+                                <span class="h4 fw-bold total_price" data-index="{{product.id}}">₹{{product.regular_price}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row p-3">
+                            <div class="col-6">
+                                <label for="select">Qty</label>
+                                <select id="select{{product.id}}">
+                                    <option selected>{{item.quantity}}</option>
+                                    <option value="">1</option>
+                                    <option value="">2</option>
+                                    <option value="">3</option>
+                                    <option value="">4</option>
+                                </select>
+                            </div>
+                            <div class="col-6 text-end">
+                                <button type="button" id="update-button" data-index="{{product.id}}" class="btn btn-secondary btn-sm update-button">
+                                    update
+                                </button>
+                                <button type="button" id="delete-button" data-index="{{product.id}}" class="btn btn-secondary btn-sm delete-button">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endwith %} {% endfor%}
+</div>
+{% endif %}
+</div>
+</div>
+
+<script>
+    $(document).on("click", ".delete-button", function(e) {
+        e.preventDefault();
+        var prodid = $(this).data("index");
+        $.ajax({
+            type: "POST",
+            url: '{% url "basket:basket_delete" %}',
+            data: {
+                productid: $(this).data("index"),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: "post",
+            },
+            success: function(response) {
+                $('.product-item[data-index="' + prodid + '"]').remove();
+                $("#subtotal").text(response.subtotal);
+                $("#basket-qty").text(response.qty);
+                $("#total").text(response.total);
+            },
+            error: function(error) {},
+        });
+    });
+    //update the Cart
+    $(document).on("click", ".update-button", function(e) {
+        e.preventDefault();
+        var prodid = $(this).data("index");
+        console.log(prodid);
+        console.log($("#select" + prodid + " option:selected").text());
+        $.ajax({
+            type: "POST",
+            url: '{% url "basket:basket_update" %}',
+            data: {
+                productid: $(this).data("index"),
+                productqty: $("#select" + prodid + " option:selected").text(),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: "post",
+            },
+            success: function(response) {
+                console.log(response);
+                $("#basket-qty").text(response.qty);
+                $("#subtotal").text(response.subtotal);
+            },
+            error: function(error) {},
+        });
+    });
+</script>
+{%endblock%}

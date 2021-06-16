@@ -1,0 +1,59 @@
+{% extends "../../base.html" %} {% block title %}Login {% endblock %} {% block css%}
+<style>
+    .account-form input {
+        border: 2px sollid #ccc;
+        height: calc(2em+.75em+2px);
+    }
+    
+    .account-form input:focus {
+        border-color: #1497ff;
+        box-shadow: none;
+    }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7 mx-auto">
+                            <form class="account-form p-4 " action="{% url 'account:login'%}" method="POST">
+                                {% csrf_token %}
+                                <h3 class="mb-4">Login</h3>
+                                {% if form.errors %}
+                                <div class="alert alert-primary" role="alert">
+                                    Error:Username and password is not correct!
+                                </div>
+                                {% endif %}
+                                <label class="form-label">{{form.username.label}}</label>{{form.username}}
+                                <label class="form-label">{{form.password.label}}</label>{{form.password}}
+                                <div class="d-grid gap-2">
+                                    <input type="hidden" name="next" value="{{next}}">
+                                    <button class="btn btn-primary  py-2 mb-4 mt-5 fw500 w-100" type="submit" value="Log-in">Login
+                                    </button>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 text-start font-weight-bold pb-3">
+                                        <a style="text-decoration:none" href="{% url 'account:register' %}">Create an
+                                            acccount</a>
+                                    </div>
+                                    <div class="col-6 text-end font-weight-bold">
+                                        <a style="text-decoration:none" href="{% url 'account:pwdreset' %}">Forget
+                                            password?</a>
+                                    </div>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

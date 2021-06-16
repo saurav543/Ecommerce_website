@@ -1,0 +1,182 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous" />
+    <link rel="stylesheet" href="{% static 'inventory/css/base.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'basket/css/basket.css' %}" type="text/css">
+
+    <title>{% block title %}{% endblock %}</title>
+    {% block css %}{% endblock %}
+</head>
+
+<body>
+    <header class="pb-3">
+        <nav class="navbar navbar-expand-md navbar-light bg-light border-bottom">
+            <div class="container-fluid px-md-4">
+                <div class="d-flex w-100 navbar-collapse">
+                    <a class="navbar-brand d-flex-inline" href="/">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-layers-half" viewBox="0 0 16 16">
+                            <path
+                                d="M8.235 1.559a.5.5 0 0 0-.47 0l-7.5 4a.5.5 0 0 0 0 .882L3.188 8 .264 9.559a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882L12.813 8l2.922-1.559a.5.5 0 0 0 0-.882l-7.5-4zM8 9.433 1.562 6 8 2.567 14.438 6 8 9.433z" />
+                        </svg>
+                    </a>
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-none d-md-block fw500" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                All
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                {% for c in categories%}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'inventory:category_list' c.slug %}">{{c.name|title}}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                        </li>
+                    </ul>
+                    <button class="navbar-toggler border-0 " type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                                class="bi bi-list" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+                            </svg>
+                        </div>
+                        <span class="fs15 fw500" style="font-size:12px;">Shop</span>
+                    </button>
+                    <div>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-reset" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="small text-muted">Hello, {% if user.is_authenticated %} {{ request.user.name}} {% else %} Login {% endif %}
+                                        </div>
+                                        <span class="fs15 fw500">Account &amp; Lists</span>
+                                    </a>
+                                    <div class="dropdown-menu rounded-0" aria-labelledby="navbarDropdown">
+                                        <div class="card-body">
+                                            <h6 class="card-title">My Account</h6>
+                                            <ul class="list-group list-group-flush dropdown-account-link">
+                                                {% if user.is_authenticated %}
+                                                <a href="{% url 'account:dashboard' %}" class="text-reset small list-group-item p-0 pb-1 border-0 dropdown-account-link">
+                                                    Your Account
+                                                </a>
+                                                <a href="{% url 'orders:order' %}" class="text-reset small list-group-item p-0 pb-1 border-0 dropdown-account-link">
+                                                    Orders
+                                                </a>
+                                                <a href="{% url 'account:logout' %}" class="text-reset small list-group-item p-0 pb-1 border-0 dropdown-account-link">Logout</a> {% else %}
+                                                <a href="{% url 'account:login' %}" class="text-reset small list-group-item p-0 pb-1 border-0 dropdown-account-link">
+                                                    Login
+                                                </a> {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <a href="{% url 'basket:basket_summary' %}" role="button" type="button" class="btn btn-outline-secondary border-0 basket-btn">
+                        {% with total_qty=basket|length %}
+                        <div id="basket-qty" class="basket-qty">
+                            {% if total_qty > 0 %}
+                            {{total_qty}}
+                            {% else %}
+                            0
+                            {%endif%}
+                        </div>
+                        {% endwith %}
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                                class="bi bi-cart" viewBox="0 0 16 16">
+                                <path
+                                    d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                            </svg>
+                        </div>
+                        <span class="fs12 fw500">Basket</span>
+                    </a>
+                </div>
+                <div class="d-md-none d-lg-none d-xl-none">
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                All
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                {% for c in categories%}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'inventory:category_list' c.slug %}">{{c.name|title}}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <h6 class="card-title">My Account</h6>
+                            <ul class="list-group list-group-flush dropdown-account-link">
+                                {% if user.is_authenticated %}
+                                <a href="{% url 'account:dashboard'  %}" class="dropdown-item">Your Account</a>
+                                <a href="{% url 'orders:order' %}" class="dropdown-item">
+                                    Orders
+                                </a>
+                                <a href="{% url 'account:logout' %}" class="dropdown-item">Logout</a> {% else %}
+                                <a href="{% url 'account:login' %}" class="dropdown-item">Login</a> {% endif %}
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+                <form class="d-flex w-100 d-md-none">
+                    <input class="form-control me-2" type="search" placeholder="search product or FAQ" arial-label="search">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    {% block content%}{% endblock%}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous">
+    </script>
+    <footer class="pt-4 my-md-5 pt-md-5 border-top text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-md">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled text-small">
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Cool stuff</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Random feature</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Team feature</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Stuff for
+                                developers</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Another one</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Last time</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled text-small">
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Resource</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Resource name</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Another resource</a>
+                        </li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Final resource</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>About</h5>
+                    <ul class="list-unstyled text-small">
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Team</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Locations</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Privacy</a></li>
+                        <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

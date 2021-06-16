@@ -1,0 +1,37 @@
+{% extends '../../base.html'%} {% block title %}Index{% endblock %} {% block content%}
+
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="pb-3 h5">{{category|title}}</div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% if products %} {% for product in products%}
+            <div class="col">
+                <div class="card shadow-sm">
+                    {% for image in product.product_image.all%} {% if image.is_feature %}
+                    <img class="img-fluid mx-auto d-block" width="200px" src="{{image.image.url}}" alt="{{image.alt_text}}" /> {% endif %} {% endfor %}
+
+
+                    <div class="card-body">
+                        <p class="card-text">
+                            <a class="text-dark text-decoration-none" href="{% url 'inventory:product_details' product.slug %}">{{product.title|title}}</a>
+                        </p>
+                        <div class="">
+                            {{product.description}}
+                        </div>
+                        <div class="">
+                            ₹{{product.regular_price}}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {%endfor%} {% else %}
+            <p class="text-center">
+                <h1>Currently no product avialable.</h1>
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{%endblock%}

@@ -1,0 +1,89 @@
+{% extends '../base.html' %} {% load static %} {% block title %}Home{% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-item-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div id="payment-form" class="col-12 col-lg-6 mx-auto">
+                            <h3 class="mb-3">Billing address</h3>
+                            <div class="a" id="card-error" role="alert"></div>
+                            <form>
+                                <div class="row g-3">
+                                    <div class="col-sm-12">
+                                        <label for="firstname" class="form-label">Customer Name</label>
+                                        <input type="text" class="form-control" id="customer" placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Valid first name is required
+                                        </div>
+                                    </div>
+                                    <div class="col-s12">
+                                        <label for="email" class="form-label">Email<span
+                                                type="text-muted">(optional)</span></label>
+                                        <input type="email" class="form-control" id="email" placeholder="example@gmail.com">
+                                        <div class="invalid-feedback">
+                                            Enter valid email for the shipping address.
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="address" class="form-label">Address</label>
+                                        <input type="text" class="form-control" id="custAdd" placeholder="st main23 street" required>
+                                        <div class="invalid-feedback">
+                                            Enter Valid shipping address.
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="address2" class="form-label">Address2<span
+                                                class="text-muted">(Optional)</span></label>
+                                        <input type="text" id="custAdd2" class="form-control" placeholder="Apartment and suit">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label for="country" class="form-label">Country</label>
+                                        <select class="form-select" id="country" required>
+                                            <option value="">Choose....</option>
+                                            <option> United State</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select a valid country
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="state" class="form-label">State</label>
+                                        <select class="form-select" id="state" required>
+                                            <option value="">Choose....</option>
+                                            <option> California</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select a valid state
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="postcode" class="form-label">Postcode</label>
+                                        <input type="text" class="form-control" id="postcode" placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Zip code required
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <h4 class="mb-3">Payment</h4>
+                                <label for="card-element">Credit or debit card</label>
+                                <div id="card-element" class="form-control form-control-payment">
+
+                                </div>
+                                <button id="submit" class="btn btn-primary w-100 fw-bold" data-secret="{{client_secret}}">Pay</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var STRIPE_PUBLISHABLE_KEY = '{{STRIPE_PUBLISHABLE_KEY}}';
+    var CSRF_TOKEN = '{{csrf_token}}';
+</script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{%static 'payment/js/index.js' %}" type="text/javascript" data-rel-js></script>
+{% endblock %}

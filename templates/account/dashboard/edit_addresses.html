@@ -1,0 +1,30 @@
+{% extends "../sub_base.html" %} {% block title %} Edit Addresses{% endblock %} {% block sub_base %}
+<div class="col-6 mx-auto">
+    <h1 class="h3">Create/Edit Addresses</h1>
+    <div> Add a new delivery <b>Address</b> and delivery preferences </div>
+    </hr>
+    <form class="account-form" name="address_form" enctype="multipart/form-data" method="post">
+        {% csrf_token %} {% if form.errors%}
+        <div class="alert alert-primary" role="alert">
+            {{form.errors}} Error:please Try again
+        </div>
+        {% endif %}
+        <label class="small  fw-bold">{{form.full_name.label}}</label> {{form.full_name}}
+        <label class="small  fw-bold">{{form.phone.label}}</label> {{form.phone}}
+        <label class="small  fw-bold">{{form.address_line.label}}</label> {{form.address_line}}
+        <label class="small  fw-bold">{{form.address_line2.label}}</label> {{form.address_line2}}
+        <label class="small  fw-bold">{{form.towncity.label}}</label> {{form.towncity}}
+        <label class="small  fw-bold">{{form.postcode.label}}</label> {{form.postcode}}
+        <button class="btn btn-primary btn-block py-2 mb-4 mt-4 fw-bold w-100" type="button" value="submit" onClick="submitform()">Add Address</button>
+    </form>
+</div>
+<script>
+    function submitform() {
+        var form = document.getElementsByName('address_form')[0];
+        console.log(form);
+        form.submit();
+        form.reset();
+        return false;
+    }
+</script>
+{% endblock %}

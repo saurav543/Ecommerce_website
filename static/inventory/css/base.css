@@ -1,0 +1,52 @@
+/* font */
+
+html,
+body,
+p,
+div {
+    letter-spacing: -0.02px;
+    font-family: 'Roboto', sans-sarif;
+}
+
+.fs12 {
+    font-size: 12px;
+}
+
+.fs15 {
+    font-size: 0.9375rem;
+}
+
+.fs300 {
+    font-weight: 300;
+}
+
+.fs500 {
+    font-weight: 500;
+}
+
+.logo {
+    width: 49px;
+    height: auto;
+}
+
+@media(min-width:760px) {
+    .logo {
+        width: 49px;
+    }
+}
+
+@media(min-width:992px) {
+    .logo {
+        width: 60px;
+    }
+}
+
+@media(min-width:1200px) {
+    .logo {
+        width: 70px;
+    }
+}
+
+.footer>div>div>ul>li {
+    padding-bottom: 8px;
+}

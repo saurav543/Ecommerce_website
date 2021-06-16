@@ -1,0 +1,42 @@
+{% extends "../../base.html" %} {% block title %}Password confirms {% endblock %} {% block css%}
+<style>
+    .account-form input {
+        border: 2px sollid #ccc;
+        height: calc(2em+.75em+2px);
+    }
+    
+    .account-form input:focus {
+        border-color: #1497ff;
+        box-shadow: none;
+    }
+</style>
+{% endblock %} {% block content %} {% if user.is_authenticated %}
+<script>
+    window.location.href = '{% url "account:dashboard" %}';
+</script>
+{% endif %}
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7 mx-auto">
+                            <div class="p-4">
+                                {% if 'email' in request.get_full_path %}
+                                <h3 class="mb-4">Password Reset successful</h3>
+                                <p>Check your email for instruction</p>
+                                {% endif %} {% if 'complete' in request.get_full_path %}
+                                <h3 class="mb-4">Password reset Success</h3>
+                                <a href="{% url 'account:login' %}">Login</a> {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
